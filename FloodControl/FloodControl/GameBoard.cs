@@ -18,9 +18,9 @@ namespace FloodControl
         }
         public void ClearBoard() //初始化每个sprit
         {
-            for (int i = 0; i < GameBoardHeight; i++)
+            for (int i = 0; i < GameBoardWidth; i++)
             {
-                for (int j = 0; j < GameBoardWidth; j++)
+                for (int j = 0; j < GameBoardHeight; j++)
                     boardSquares[i, j] = new GamePieces("Empty");
             }
         }
@@ -112,8 +112,43 @@ namespace FloodControl
 
         public void FillPiece(int x, int y) //添加注水标志
         {
-            boardSquares[x, y].AddSuffix("w");
+            boardSquares[x, y].AddSuffix("W");
         }
+
+        public void PropagetWatter(int x, int y, string fromDirection) //水的方向来自fromDirection
+        {
+            if((y >= 0) && (y < GameBoardHeight) &&
+                (x>= 0) && (x < GameBoardWidth))
+            {
+                if (boardSquares[x, y].HasConnector(fromDirection) &&
+                    !boardSquares[x, y].PieceSurfix.Contains("W"))
+                {
+                    //若该管道在fromDirection方向上有入口，且还没有注满水，则
+                    FillPiece(x, y);//注水该管道
+                    WaterTracker.Add(new Vector2(x, y));
+                    foreach (string end in boardSquares[x, y].GetOtherEnds(fromDirection))//找到出口
+                    {
+                        switch (end)
+                        {
+                            case "Left":
+                                PropagetWatter(x-1, y, "Right");
+                                break;
+                            case "Top":
+                                PropagetWatter(x, y+1, "Bottom");
+                                break;
+                            case "Right":
+                                PropagetWatter(x+1, y, "Left");
+                                break;
+                            case "Bottom":
+                                PropagetWatter(x, y-1, "Top");
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+
 
 
     }

@@ -1,0 +1,9 @@
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\bin\x86\Debug\FloodControl.exe
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\bin\x86\Debug\FloodControl.pdb
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\obj\x86\Debug\FloodControl.csprojResolveAssemblyReference.cache
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\obj\x86\Debug\FloodControl.exe
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\obj\x86\Debug\FloodControl.pdb
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\bin\x86\Debug\Content\Textures\Background.xnb
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\bin\x86\Debug\Content\Textures\Tile_Sheet.xnb
+D:\XNA\git\windows_pjt\FloodControl\FloodControl\bin\x86\Debug\Content\Textures\TitleScreen.xnb
