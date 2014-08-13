@@ -55,7 +55,7 @@ namespace FloodControl
             GamePieces.MaxPlayablePieceIndex + 1)]);
         }
 
-        public void FillFromAbove( int x,int y)
+        public void FillFromAbove( int x,int y) //将自己上方的非空的sprit移动到下面
         {
             int rowLookup = y - 1; //上方有多少
             while (rowLookup >= 0)
@@ -70,6 +70,51 @@ namespace FloodControl
             }
 
         }
+
+        public void GenerateNewPieces(bool dropSquares)  //将所有消掉的管道用上方的非空管道补上
+        {
+
+            if (dropSquares)
+            {
+                for (int x = 0; x < GameBoard.GameBoardWidth; x++)
+                {
+                    for (int y = GameBoard.GameBoardHeight - 1; y >= 0; y--)
+                    {
+                        if (GetSquare(x, y) == "Empty")
+                        {
+                            FillFromAbove(x, y);
+                        }
+                    }
+                }
+            }
+
+            for (int y = 0; y < GameBoard.GameBoardHeight; y++)//将空管道填充为新的管道
+            {
+                for (int x = 0; x < GameBoard.GameBoardWidth; x++)
+                {
+                    if (GetSquare(x, y) == "Empty")
+                    {
+                        RandomPiece(x, y);
+                    }
+                }
+            }
+        }
+
+
+        public void ResetWater() //清除注水标志
+        {
+            for (int y = 0; y < GameBoardHeight; y++)
+            {
+                for (int x = 0; x < GameBoardWidth; x++)
+                    boardSquares[x, y].RemoveSuffix("W");
+            }
+        }
+
+        public void FillPiece(int x, int y) //添加注水标志
+        {
+            boardSquares[x, y].AddSuffix("w");
+        }
+
 
     }
 }
