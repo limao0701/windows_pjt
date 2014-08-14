@@ -115,6 +115,14 @@ namespace FloodControl
             boardSquares[x, y].AddSuffix("W");
         }
 
+        public List<Vector2> GetWaterChain(int y)
+        {
+            WaterTracker.Clear();
+            PropagetWatter(0,y,"Left");
+            return WaterTracker;
+            
+        }
+
         public void PropagetWatter(int x, int y, string fromDirection) //水的方向来自fromDirection
         {
             if((y >= 0) && (y < GameBoardHeight) &&

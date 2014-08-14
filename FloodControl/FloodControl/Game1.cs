@@ -28,7 +28,7 @@ namespace FloodControl
         Vector2 gameBoardDisplayOrigin = new Vector2(70, 89);//ÓÎÏ·ÏÔÊ¾ÇøÓò
         int playerScore = 0;
         enum GameState { TitleScreen, Playing };
-        GameState gameState = GameState.Playing;//.TitleScreen;
+        GameState gameState = GameState.TitleScreen;
         Rectangle EmptyPiece = new Rectangle(1, 247, 40, 40);
         const float MinTimeSinceLastInput = 0.25f;
         float timeSinceLastInput = 0.0f;
@@ -94,6 +94,34 @@ namespace FloodControl
                 this.Exit();
 
             // TODO: Add your update logic here
+            switch (gameState)
+            {
+                case GameState.TitleScreen:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        gameBoard.ClearBoard();
+                        gameBoard.GenerateNewPieces(false);
+                        playerScore = 0;
+                        gameState = GameState.Playing;
+                    }
+                    break;
+
+                case GameState.Playing:
+                    {
+                        timeSinceLastInput += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (timeSinceLastInput >= MinTimeSinceLastInput)
+                        {
+                            HandleMouseInput(Mouse.GetState());
+                        }
+                        gameBoard.ResetWater();
+                        for (int y = 0; y < GameBoard.GameBoardHeight; y++)
+                        {
+                            CheckScoringChain(gameBoard.GetWaterChain(y));
+                        }
+                        gameBoard.GenerateNewPieces(true);
+                        break;
+                    }
+            }
             
 
 
@@ -155,6 +183,49 @@ namespace FloodControl
 
 
             base.Draw(gameTime);
+        }
+
+        private int DetermineScore(int SquareCount)
+        {
+            return (int)((Math.Pow((SquareCount / 5) , 2) + SquareCount) *10);
+        }
+
+        private void CheckScoringChain(List<Vector2> WaterChain)
+        {
+            if (WaterChain.Count > 0)
+            {
+                Vector2 LastPipe = WaterChain[WaterChain.Count - 1];
+                if (LastPipe.X == GameBoard.GameBoardWidth - 1)
+                {
+                    if (gameBoard.HasConnector((int)LastPipe.Y, (int)LastPipe.Y, "Right"))
+                    {
+                        playerScore += DetermineScore(WaterChain.Count);
+                        foreach (Vector2 ScoringSquare in WaterChain)
+                        {
+                            gameBoard.SetSquare( (int)ScoringSquare.X, (int)ScoringSquare.Y,"Empty");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandleMouseInput(MouseState mouseState)
+        {
+            int x = ((mouseState.X - (int)gameBoardDisplayOrigin.X / GamePieces.PieceWidth));
+            int y = ((mouseState.Y - (int)gameBoardDisplayOrigin.Y / GamePieces.PieceHeight));
+            if ((x >= 0) && (x < GameBoard.GameBoardWidth) && (y >= 0) && (y < GameBoard.GameBoardHeight))
+            {
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    gameBoard.RotatePiece(x, y, false);
+                    timeSinceLastInput = 0.0f;
+                }
+                if (mouseState.RightButton == ButtonState.Pressed)
+                {
+                    gameBoard.RotatePiece(x, y, true);
+                    timeSinceLastInput = 0.0f;
+                }
+            }
         }
     }
 }
